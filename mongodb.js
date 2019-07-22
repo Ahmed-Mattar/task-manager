@@ -1,9 +1,11 @@
 // CRUD create read update delete
-const mongodb = require('mongodb')
-const MongoClient = mongodb.MongoClient 
+
+const  {MongoClient, ObjectID} = require('mongodb')
 
 const connectionURL = 'mongodb://127.0.0.1:27017'
 const databaseName = 'task-manager'
+
+
 
 MongoClient.connect(connectionURL, {useNewUrlParser: true}, (error, client) =>{
     if(error){
@@ -12,49 +14,28 @@ MongoClient.connect(connectionURL, {useNewUrlParser: true}, (error, client) =>{
 
     const db  = client.db(databaseName)
 
-    // db.collection('users').insertOne({
-    //     name: 'Ahmed',
-    //     age: 24
-    // }, (error, result) => {
-    //     if(error){
-    //         return console.log('Unable to insert user')
+    // db.collection('users').updateOne({
+    //     _id: new ObjectID("5d34a41b4080642cf0828b15")
+    // }, {
+    //     $inc:{
+    //         age:5
     //     }
-
-    //     console.log(result.ops)
+    // }).then( (result)=>{
+    //     console.log(result)
+    // }).catch( (error)=>{
+    //     console.log(error)
     // })
 
-    // db.collection('users').insertMany([{
-    //       name: 'Ramy',
-    //       age: 34  
-    // },{
-    //       name:'riham',
-    //       age:29
-    // }],(error,result)=>{
-    //     if(error){
-    //         return console.log('Unable to insert documents!')
-    //     }
-
-    //     console.log(result.ops)
-    // })
-
-    db.collection('tasks').insertMany([
-        {
-        description : "walk the dog",
+    db.collection('tasks').updateMany({
         completed: false
-        },
-        {
-        description : "walk the cat",
-        completed: false
-        },
-        {
-        description : "buy a new tv",
-        completed: true
-        }],(error,result) => {
-            if(error){
-              return console.log('Unable to insert documents!')
-            }
-
-            console.log(result.ops)
+    },{
+        $set:{
+            completed:true
+        }
+    }).then((result)=>{
+        console.log(result)
+    }).catch((error)=>{
+        console.log(error)
     })
     
 })
