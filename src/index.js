@@ -7,26 +7,40 @@ const taskRouter = require('./routers/task')
 const app = express()
 const port = process.env.PORT || 3000
 
+app.use((req, res, next) => {
+    if (req.method === 'GET') {
+        res.send('GET requests are disabled')
+    } else {
+        next()
+    }
+})
+
 app.use(express.json())
 app.use(userRouter)
 app.use(taskRouter)
 
+
+//
+// without middleware: new request -> run route handler
+//
+// with middleware: new request -> do something -> run route handler
+//
 
 app.listen(port, () => {
     console.log(`Server is up on port ${port}`)
 })
 
 
-const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 const myFunction = async () => {
-    const password = 'Red12345!'
-    const hashedPassword = await bcrypt.hash(password, 8)
 
-    console.log(password, hashedPassword)
+    const token = jwt.sign({_id: 'abc123' }, 'thisisthesigntoken', { expiresIn: '7 days'})
 
-    const isMatch = await bcrypt.compare('red12345!', hashedPassword)
-    console.log(isMatch)
+    console.log(token)
+
+   console.log(jwt.verify(token, 'thisisthesigntoken'))
+
 }
 
 myFunction()
